@@ -9,8 +9,11 @@ const Navbar = () => {
   const isUserLoggedIn = true;
   const [providers, setProviders] =
     useState<Awaited<ReturnType<typeof getProviders>>>();
-    const [toggleDropdown,setToggleDropdown] = useState(false)
-
+  const [toggleDropdown, setToggleDropdown] = useState(false);
+  const handleSignout = () => {
+    setToggleDropdown(false);
+    signOut();
+  };
   useEffect(() => {
     const setProvider = async () => {
       const response = await getProviders();
@@ -29,77 +32,106 @@ const Navbar = () => {
           className="object-contain"
         />
         <p className="logo_text">Promptopia</p>
-        <div className="sm:flex hidden">
-          {isUserLoggedIn ? (
-            <div className="flex gap-3 md:gap-5">
-              <Link href="create-prompt">Create Post</Link>
-              <button
-                onClick={() => signOut()}
-                type="button"
-                className="outline_btn"
-              >
-                Sign Out
-              </button>
-              <Link href="/profile">
-                <Image
-                  width={37}
-                  height={37}
-                  alt="profile"
-                  className="rounded-full"
-                  src="/assets/images/logo.svg"
-                />
-              </Link>
-            </div>
-          ) : (
-            <>
-              {providers
-                ? Object.values(providers).map((provider) => {
-                    return (
-                      <button
-                        key={provider.id}
-                        type="button"
-                        onClick={() => signIn(provider.id)}
-                        className="black_btn"
-                      >
-                        Sign-in
-                      </button>
-                    );
-                  })
-                : null}
-            </>
-          )}
-        </div>
-        {/* Mobile Nav */}
-        <div className="sm:hidden flex relative">
-          {isUserLoggedIn ? (
+      </Link>
+      <div className="sm:flex hidden">
+        {isUserLoggedIn ? (
+          <div className="flex gap-3 md:gap-5">
+            <Link className="black_btn" href="create-prompt">
+              Create Post
+            </Link>
+            <button
+              onClick={() => signOut()}
+              type="button"
+              className="outline_btn black_btn"
+            >
+              Sign Out
+            </button>
+            <Link href="/profile">
+              <Image
+                width={37}
+                height={37}
+                alt="profile"
+                className="rounded-full"
+                src="/assets/images/logo.svg"
+              />
+            </Link>
+          </div>
+        ) : (
+          <>
+            {providers
+              ? Object.values(providers).map((provider) => {
+                  return (
+                    <button
+                      key={provider.id}
+                      type="button"
+                      onClick={() => signIn(provider.id)}
+                      className="black_btn"
+                    >
+                      Sign-in
+                    </button>
+                  );
+                })
+              : null}
+          </>
+        )}
+      </div>
+      {/* Mobile Nav */}
+      <div className="sm:hidden flex relative">
+        {isUserLoggedIn ? (
+          <>
             <Image
               src="/assets/images/logo.svg"
               width={37}
               height={37}
               className="rounded-full"
               alt="profile"
-            
+              onClick={() => setToggleDropdown((prev) => !prev)}
             />
-          ) : <>
-          {
-            providers
-            ? Object.values(providers).map((provider) => {
-                return (
-                  <button
-                    key={provider.id}
-                    type="button"
-                    onClick={() => signIn(provider.id)}
-                    className="black_btn"
-                  >
-                    Sign-in
-                  </button>
-                );
-              })
-            : null
-          }
-          </>}
-        </div>
-      </Link>
+            {toggleDropdown ? (
+              <div className="dropdown">
+                <Link
+                  href="/profile"
+                  className="dropdown_link"
+                  onClick={() => setToggleDropdown(false)}
+                >
+                  My Porfile
+                </Link>
+                <Link
+                  href="/create-prompt"
+                  className="dropdown_link"
+                  onClick={() => setToggleDropdown(false)}
+                >
+                  Create Prompt
+                </Link>
+                <button
+                  className="mt-5 w-full black_btn"
+                  type="button"
+                  onClick={handleSignout}
+                >
+                  Sign out
+                </button>
+              </div>
+            ) : null}
+          </>
+        ) : (
+          <>
+            {providers
+              ? Object.values(providers).map((provider) => {
+                  return (
+                    <button
+                      key={provider.id}
+                      type="button"
+                      onClick={() => signIn(provider.id)}
+                      className="black_btn"
+                    >
+                      Sign-in
+                    </button>
+                  );
+                })
+              : null}
+          </>
+        )}
+      </div>
     </nav>
   );
 };
