@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { signIn, signOut, useSession, getProviders } from "next-auth/react";
 
 const Navbar = () => {
-  const isUserLoggedIn = true;
+  const { data: session } = useSession();
   const [providers, setProviders] =
     useState<Awaited<ReturnType<typeof getProviders>>>();
   const [toggleDropdown, setToggleDropdown] = useState(false);
@@ -15,11 +15,11 @@ const Navbar = () => {
     signOut();
   };
   useEffect(() => {
-    const setProvider = async () => {
+    const setUpProvider = async () => {
       const response = await getProviders();
       setProviders(response);
     };
-    setProvider();
+    setUpProvider();
   }, []);
   return (
     <nav className="flex-between w-full mb-16 pt-3">
@@ -34,7 +34,7 @@ const Navbar = () => {
         <p className="logo_text">Promptopia</p>
       </Link>
       <div className="sm:flex hidden">
-        {isUserLoggedIn ? (
+        {session?.user ? (
           <div className="flex gap-3 md:gap-5">
             <Link className="black_btn" href="create-prompt">
               Create Post
@@ -52,7 +52,7 @@ const Navbar = () => {
                 height={37}
                 alt="profile"
                 className="rounded-full"
-                src="/assets/images/logo.svg"
+                src={session.user.image}
               />
             </Link>
           </div>
@@ -77,10 +77,10 @@ const Navbar = () => {
       </div>
       {/* Mobile Nav */}
       <div className="sm:hidden flex relative">
-        {isUserLoggedIn ? (
+        {session?.user ? (
           <>
             <Image
-              src="/assets/images/logo.svg"
+              src={session.user.image}
               width={37}
               height={37}
               className="rounded-full"
