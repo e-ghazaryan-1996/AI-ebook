@@ -12,4 +12,10 @@ declare module "next-auth" {
       id: string;
     };
   }
+
+  interface Profile {
+    email: string;
+    name: string;
+    picture: string;
+  }
 }

@@ -14,6 +14,7 @@ const Navbar = () => {
     setToggleDropdown(false);
     signOut();
   };
+
   useEffect(() => {
     const setUpProvider = async () => {
       const response = await getProviders();
